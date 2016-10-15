@@ -16,7 +16,7 @@ days<-split(activity_cc,as.factor(activity_cc$date))
 ## What is mean total number of steps taken per day?
 
 ```r
-##do lapply with a function that does the some of the data frame
+##do lapply with a function that does the sum of the data frame
 doSum<-function(day) {
   df<-as.data.frame(day)
   sum(df[,1])
@@ -30,7 +30,7 @@ days<-split(activity_cc,as.factor(activity_cc$date))
 dailySteps<-as.numeric(lapply(days,doSum))
 dailySteps<-dailySteps[dailySteps>0]  ##ignoring days where there are no steps as first and last day is NA
 ##Histogram of total daily steps
-hist(dailySteps)
+hist(dailySteps,xlab = "Number of Daily Steps",main = "Total Daily Step Frequency")
 ```
 
 ![](PA1_template_files/figure-html/numSteps-1.png)<!-- -->
@@ -73,7 +73,17 @@ plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean S
 
 ![](PA1_template_files/figure-html/dailyActivity-1.png)<!-- -->
 
+We also want to know the interval with the maxium number of steps
 
+
+```r
+ctimes[which.max(cmeans)]
+```
+
+```
+## [1] "835"
+```
+Or 8:35 in the morning
 
 ## Imputing missing values
 NOTE: My method for creating the missing values is taking the average for each interval using the dataset with only complete clases (x2
@@ -113,7 +123,7 @@ dates<-unique(as.Date(activity$date))
 days<-split(activity,as.factor(activity$date))
 dailySteps<-as.numeric(lapply(days,doSum))
 dailySteps<-dailySteps[dailySteps>0]
-hist(dailySteps)
+hist(dailySteps, xlab = "Number of Daily Steps",main = "Total Daily Step Frequency (NA's replaced)")
 ```
 
 ![](PA1_template_files/figure-html/dailySteps2-1.png)<!-- -->
@@ -137,40 +147,51 @@ Process the updated data (where NA is replace) to create separate datasets for w
 Note that the timeseries graphs appear to be as one would expace....more steps earlier on the weekdays with steps decreasing earlier.  On the weekends steps jump up a little later but there are more steps during the day and longer into the evening.
 
 ```r
+require(lattice)
+```
+
+```
+## Loading required package: lattice
+```
+
+```r
 ##create the weekday and weekend column
 dows<-weekdays(as.Date(activity$date))
 dows[dows=="Sunday" | dows=="Saturday"]<-"Weekend"
 dows[!(dows=="Weekend")]<-"Weekday"
 
+
 ##bind it to the updated data and then splt using the weekend/weekday column as a factor
 x_wd<-cbind(activity,dows)
-days2<-split(x_wd,as.factor(x_wd$dows))
-wdVal<-days2[[1]]
-weVal<-days2[[2]]
+we2<-spread(x_wd,interval,steps)
+grp<-split(we2,we2$dows)
 
-##spread the data and calculate the means as was done earlier
-wdVal2<-subset(wdVal,select = -dows)
-wd2<-spread(wdVal2,interval,steps)
 
-sumcol<-subset(wd2, select = -date)
-cmeans<-colMeans(sumcol)
-ctimes<-names(wd2)
-ctimes<-ctimes[2:289]
+##create sum for weekdays
+wdToSum<-subset(grp[[1]],select = c(-dows,-date))
+int<-names(wdToSum)
+cmeans<-colMeans(wdToSum)
+dow1<-as.character(grp[[1]][1,2])
+dowVec1<-as.vector(rep(dow1,length(cmeans)))
 
-##setup and create the first plot
-par(mfcol=c(2,1))
-par(mar=c( 4.1, 4.1, 1.1, 2.1))
-plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekday Steps",cex.main=.75,cex.axis=0.75,cex.lab=.75)
 
-##do the same for the weekend data
-weVal2<-subset(weVal,select = -dows)
-we2<-spread(weVal2,interval,steps)
+##turn it into a data frame for lattice
+df1<-as.data.frame(cbind(dow1,cmeans,int))
 
-sumcol<-subset(we2, select = -date)
-cmeans<-colMeans(sumcol)
-ctimes<-names(we2)
-ctimes<-ctimes[2:289]
-plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekend Steps",cex.main=.75,cex.axis=0.75,cex.lab=.75)
+##the same for weekends
+wdToSum2<-subset(grp[[2]],select = c(-dows,-date))
+cmeans<-colMeans(wdToSum)
+dow1<-as.character(grp[[2]][1,2])
+
+dowVec1<-as.vector(rep(dow1,length(cmeans)))
+df2<-as.data.frame(cbind(dow1,cmeans,int))
+
+##put the two together
+dfTotal<-rbind(df2,df1)
+dfTotal$cmeans<-as.integer(as.numeric(as.character(dfTotal$cmeans)))
+dfTotal$int<-as.integer(as.character(dfTotal$int))
+xyplot (cmeans ~ int | dow1, data=dfTotal, type="l",
+        layout=c(1,2), as.table=T, xlab="Interval", ylab="Number of steps")
 ```
 
 ![](PA1_template_files/figure-html/activityCompare-1.png)<!-- -->
