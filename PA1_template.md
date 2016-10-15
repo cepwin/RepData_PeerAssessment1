@@ -134,6 +134,7 @@ summary(dailySteps)
 ## Are there differences in activity patterns between weekdays and weekends?
 
 Process the updated data (where NA is replace) to create separate datasets for weekends and weekdays and create timeseries graphs
+Note that the timeseries graphs appear to be as one would expace....more steps earlier on the weekdays with steps decreasing earlier.  On the weekends steps jump up a little later but there are more steps during the day and longer into the evening.
 
 ```r
 ##create the weekday and weekend column
@@ -158,8 +159,8 @@ ctimes<-ctimes[2:289]
 
 ##setup and create the first plot
 par(mfcol=c(2,1))
-par(mar=c( 2.1, 4.1, 2.1, 2.1))
-plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekday Steps")
+par(mar=c( 4.1, 4.1, 1.1, 2.1))
+plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekday Steps",cex.main=.75,cex.axis=0.75,cex.lab=.75)
 
 ##do the same for the weekend data
 weVal2<-subset(weVal,select = -dows)
@@ -169,7 +170,7 @@ sumcol<-subset(we2, select = -date)
 cmeans<-colMeans(sumcol)
 ctimes<-names(we2)
 ctimes<-ctimes[2:289]
-plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekend Steps")
+plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekend Steps",cex.main=.75,cex.axis=0.75,cex.lab=.75)
 ```
 
 ![](PA1_template_files/figure-html/activityCompare-1.png)<!-- -->

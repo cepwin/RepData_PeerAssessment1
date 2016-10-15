@@ -37,7 +37,7 @@ days2<-split(x_wd,as.factor(x_wd$dows))
 wdVal<-days2[[1]]
 weVal<-days2[[2]]
 par(mfcol=c(2,1))
-par(mar=c( 1.1, 4.1, 4.1, 1.1))
+par(mar=c( 4.1, 4.1, 1.1, 2.1))
 print(names(wdVal))
 wdVal2<-subset(wdVal,select = -dows)
 wd2<-spread(wdVal2,interval,steps)
@@ -46,7 +46,7 @@ sumcol<-subset(wd2, select = -date)
 cmeans<-colMeans(sumcol)
 ctimes<-names(wd2)
 ctimes<-ctimes[2:289]
-plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekday Steps")
+plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekday Steps",cex.main=.75,cex.axis=0.75,cex.lab=.75)
 weVal2<-subset(weVal,select = -dows)
 we2<-spread(weVal2,interval,steps)
 
@@ -55,7 +55,7 @@ cmeans<-colMeans(sumcol)
 ctimes<-names(we2)
 print(ctimes)
 ctimes<-ctimes[2:289]
-plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekend Steps")
+plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekend Steps",cex.main=.75,cex.axis=0.75,cex.lab=.75)
 
 ##dailySteps2<-as.numeric(lapply(days2[1],doSum))
 ##dailySteps2<-dailySteps2[dailySteps2>0]
