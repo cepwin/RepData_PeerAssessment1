@@ -22,14 +22,21 @@ doSum<-function(day) {
   sum(df[,1])
 }
 
+##breaking the data into days
+dates<-unique(as.Date(x2$date))
+days<-split(x2,as.factor(x2$date))
+
+##creating the daily total for the steps
 dailySteps<-as.numeric(lapply(days,doSum))
 dailySteps<-dailySteps[dailySteps>0]  ##ignoring days where there are no steps as first and last day is NA
+##Histogram of total daily steps
 hist(dailySteps)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](PA1_template_files/figure-html/numSteps-1.png)<!-- -->
 
 ```r
+##summary including the mean and median
 summary(dailySteps)
 ```
 
@@ -61,7 +68,7 @@ ctimes<-ctimes[2:289]
 plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](PA1_template_files/figure-html/dailyActivity-1.png)<!-- -->
 
 
 
@@ -99,7 +106,7 @@ dailySteps<-dailySteps[dailySteps>0]
 hist(dailySteps)
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](PA1_template_files/figure-html/dailySteps2-1.png)<!-- -->
 
 ```r
 summary(dailySteps)
@@ -123,7 +130,7 @@ days2<-split(x_wd,as.factor(x_wd$dows))
 wdVal<-days2[[1]]
 weVal<-days2[[2]]
 par(mfcol=c(2,1))
-par(mar=c( 1.1, 4.1, 4.1, 1.1))
+par(mar=c( 2.1, 4.1, 2.1, 2.1))
 wdVal2<-subset(wdVal,select = -dows)
 wd2<-spread(wdVal2,interval,steps)
 
@@ -142,4 +149,4 @@ ctimes<-ctimes[2:289]
 plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps", main = "Weekend Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](PA1_template_files/figure-html/activityCompare-1.png)<!-- -->

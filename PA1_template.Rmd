@@ -18,17 +18,24 @@ days<-split(x2,as.factor(x2$date))
 ```
 
 ## What is mean total number of steps taken per day?
-```{r}
-
+```{r numSteps}
 ##do lapply with a function that does the some of the data frame
 doSum<-function(day) {
   df<-as.data.frame(day)
   sum(df[,1])
 }
 
+##breaking the data into days
+dates<-unique(as.Date(x2$date))
+days<-split(x2,as.factor(x2$date))
+
+##creating the daily total for the steps
 dailySteps<-as.numeric(lapply(days,doSum))
 dailySteps<-dailySteps[dailySteps>0]  ##ignoring days where there are no steps as first and last day is NA
+##Histogram of total daily steps
 hist(dailySteps)
+
+##summary including the mean and median
 summary(dailySteps)
 
 
@@ -38,7 +45,7 @@ summary(dailySteps)
 
 ## What is the average daily activity pattern?
 
-```{r}
+```{r dailyActivity}
 require(tidyr)
 x4<-spread(x2,interval,steps)
 
@@ -54,7 +61,7 @@ plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean S
 ## Imputing missing values
 NOTE: My method for creating the missing values is taking the average for each interval using the dataset with only complete clases (x2
 )  I then get a list of incomplete rows and for each empty value I replace it with the mean value for that 5 minute interval.
-```{R}
+```{R dailySteps2}
 x4<-spread(x2,interval,steps)
 
 sumcol<-subset(x4, select = -date)
@@ -81,7 +88,7 @@ summary(dailySteps)
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r}
+```{r activityCompare}
 dows<-weekdays(as.Date(x$date))
 dows[dows=="Sunday" | dows=="Saturday"]<-"Weekend"
 dows[!(dows=="Weekend")]<-"Weekday"
@@ -90,7 +97,7 @@ days2<-split(x_wd,as.factor(x_wd$dows))
 wdVal<-days2[[1]]
 weVal<-days2[[2]]
 par(mfcol=c(2,1))
-par(mar=c( 1.1, 4.1, 4.1, 1.1))
+par(mar=c( 2.1, 4.1, 2.1, 2.1))
 wdVal2<-subset(wdVal,select = -dows)
 wd2<-spread(wdVal2,interval,steps)
 
