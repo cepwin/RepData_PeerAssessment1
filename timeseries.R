@@ -1,3 +1,4 @@
+timeseries<-function() {
 require(tidyr)
 x<-read.csv("activity.csv")
 
@@ -10,3 +11,6 @@ sumcol<-subset(x4, select = -date)
 cmeans<-colMeans(sumcol)
 ctimes<-names(x4)
 ctimes<-ctimes[2:289]
+plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps")
+
+}
