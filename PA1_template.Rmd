@@ -8,18 +8,75 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r}
+x<-read.csv("activity.csv")
 
+##remove N
+x2<-as.data.frame(x[complete.cases(x),])
+dates<-unique(as.Date(x2$date))
+days<-split(x2,as.factor(x2$date))
+```
 
 ## What is mean total number of steps taken per day?
+```{r}
+
+##do lapply with a function that does the some of the data frame
+doSum<-function(day) {
+  df<-as.data.frame(day)
+  sum(df[,1])
+}
+
+dailySteps<-as.numeric(lapply(days,doSum))
+dailySteps<-dailySteps[dailySteps>0]
+hist(dailySteps)
+summary(dailySteps)
+
+
+```
 
 
 
 ## What is the average daily activity pattern?
 
+```{r}
+require(tidyr)
+x4<-spread(x2,interval,steps)
+
+sumcol<-subset(x4, select = -date)
+cmeans<-colMeans(sumcol)
+ctimes<-names(x4)
+ctimes<-ctimes[2:289]
+plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps")
+```
+
 
 
 ## Imputing missing values
+NOTE: My method for creating the missing values is taking the average for each interval using the dataset with only complete clases (x2
+)  I then get a list of incomplete rows and for each empty value I replace it with the mean value for that 5 minute interval.
+```{R}
+x4<-spread(x2,interval,steps)
 
+sumcol<-subset(x4, select = -date)
+cmeans<-colMeans(sumcol)
+
+replace<-which(is.na(x$steps))
+
+print(length(replace))
+## for each item in x if is.na(Steps) replace with
+## cmeans[row]
+for(i in replace) {
+    row<-i %% 288 + 1  ##each day has 288 intervals so I figure out what interval it is using the modulo of 288 +1 (since its base 1)
+    rep<-as.integer(cmeans[row])
+    x[i,1]<- rep
+}
+dates<-unique(as.Date(x$date))
+days<-split(x,as.factor(x$date))
+dailySteps<-as.numeric(lapply(days,doSum))
+dailySteps<-dailySteps[dailySteps>0]
+hist(dailySteps)
+summary(dailySteps)
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?

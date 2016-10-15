@@ -8,7 +8,7 @@ days<-split(x2,as.factor(x2$date))
 dailySteps<-as.numeric(lapply(days,doSum))
 dailySteps<-dailySteps[dailySteps>0]
 hist(dailySteps)
-print(summary(dailySteps))
+summary(dailySteps)
 }
 
 ##do lapply with a function that does the some of the data frame
