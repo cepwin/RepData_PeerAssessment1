@@ -10,6 +10,7 @@ x4<-spread(x2,interval,steps)
 sumcol<-subset(x4, select = -date)
 cmeans<-colMeans(sumcol)
 ctimes<-names(x4)
+print(ctimes)
 ctimes<-ctimes[2:289]
 plot(x=ctimes,y=cmeans,type="l",xlab = "Time (in 5 min intervals",ylab = "Mean Steps")
 
