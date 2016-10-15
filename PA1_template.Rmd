@@ -27,7 +27,7 @@ doSum<-function(day) {
 }
 
 dailySteps<-as.numeric(lapply(days,doSum))
-dailySteps<-dailySteps[dailySteps>0]
+dailySteps<-dailySteps[dailySteps>0]  ##ignoring days where there are no steps as first and last day is NA
 hist(dailySteps)
 summary(dailySteps)
 
